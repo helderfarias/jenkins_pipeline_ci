@@ -30,4 +30,18 @@ node('go') {
         }
     }
 }
+
+withEnv(["PATH+Docker=${tool 'Docker'}/bin"]) {
+   docker.withServer('ip:porta') {
+       def maven = docker.image("maven:alpine")
+
+       maven.inside("-v /var/jenkins_home/.m2:/root/.m2") {
+           sh "mvn package"
+       }
+
+       step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+       step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])            
+   }
+}
+
 ```
