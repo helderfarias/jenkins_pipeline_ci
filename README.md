@@ -44,4 +44,7 @@ withEnv(["PATH+Docker=${tool 'Docker'}/bin"]) {
    }
 }
 
+docker.image('maven:3.3.3-jdk8').inside('-v ~/.m2/repo:/ m2repo') {
+   sh 'mvn -Dmaven.repo.local=/m2repo clean package' 
+}
 ```
